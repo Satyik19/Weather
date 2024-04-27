@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href='{{url_for("static",filename="style.css")}}'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Weather App</title>
+    
+</head>
+<body>
+    <div class="top-right">
+        <form action="/logout" method="get">
+            <button type="submit" class="logout-button"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </form>
+    </div>
+    <h1>Welcome to Weather App</h1>
+    <form action="/" method="post">
+        <input class="city" name="city" placeholder="Enter the city name" type="text">
+        <button type="submit">Add City</button>
+    </form>
+    <div>
+        {% if city_name %}
+        <h3>City Name:{{city_name}}</h3>
+        <h3>Temperature: {{ temperature }}°C</h3>
+        <h3>Humidity: {{ humidity }}%</h3>
+        <h3>Pressure: {{ pressure }} hPa</h3>
+    {% endif %}
+    </div>
+    <div class="add-city">
+        <h2>ALL OF YOUR CITIES</h2>
+        <table style="width: 80%;">
+            <thead>
+                <tr>
+                    <th class="cell" colspan="2">NAME</th>
+                    <th class="cell" colspan="2">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for city in cities%}
+                <tr onclick="openModal('{{city.name}}', '{{city.temperature}}', '{{city.humidity}}', '{{city.pressure}}')">
+                    <td class="cell" colspan="2">{{city.name}}</td>
+                    <td class="cell" colspan="2">
+                        <form action="/delete/{{city.id}}" method="POST">
+                            <button type="submit">DELETE</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div id="modalContent"></div>
+            <div>
+           
+        </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Function to open the modal and display city details
+        function openModal(name, temperature, humidity, pressure) {
+            var modalTitle = document.getElementById('modalTitle');
+            var modalContent = document.getElementById('modalContent');
+
+            modalTitle.textContent = name;
+            let icon = "";
+            if (Number(temperature) >=40)
+                icon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" fill="red" height="24" viewBox="0 0 24 24"><path d="M8.5 2c.827 0 1.5.673 1.5 1.5v7.525c0 1.569.514 2.287 1.411 3.05 1.01.858 1.589 2.106 1.589 3.425 0 2.481-2.019 4.5-4.5 4.5s-4.5-2.019-4.5-4.5c0-1.319.579-2.567 1.59-3.425.896-.761 1.41-1.48 1.41-3.05v-7.525c0-.827.673-1.5 1.5-1.5zm0-2c-1.933 0-3.5 1.567-3.5 3.5v7.525c0 .587-.258 1.145-.705 1.525-1.403 1.192-2.295 2.965-2.295 4.95 0 3.59 2.909 6.5 6.5 6.5s6.5-2.91 6.5-6.5c0-1.985-.892-3.758-2.295-4.95-.447-.38-.705-.938-.705-1.525v-7.525c0-1.933-1.567-3.5-3.5-3.5zm2.107 14.718c-1.012-.89-1.607-1.734-1.607-3.22v-6.498h-1v6.498c0 1.484-.597 2.332-1.607 3.22-.794.698-1.393 1.642-1.393 2.782 0 1.933 1.567 3.5 3.5 3.5s3.5-1.567 3.5-3.5c0-1.14-.599-2.083-1.393-2.782zm6.393-3.718h2v-5h3l-4-4-4 4h3v5z"/></svg>`;
+            else if (Number(temperature) >=28 && Number(temperature) <= 40)
+            icon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" fill="black" height="24" viewBox="0 0 24 24"><path d="M8.5 2c.827 0 1.5.673 1.5 1.5v7.525c0 1.569.514 2.287 1.411 3.05 1.01.858 1.589 2.106 1.589 3.425 0 2.481-2.019 4.5-4.5 4.5s-4.5-2.019-4.5-4.5c0-1.319.579-2.567 1.59-3.425.896-.761 1.41-1.48 1.41-3.05v-7.525c0-.827.673-1.5 1.5-1.5zm0-2c-1.933 0-3.5 1.567-3.5 3.5v7.525c0 .587-.258 1.145-.705 1.525-1.403 1.192-2.295 2.965-2.295 4.95 0 3.59 2.909 6.5 6.5 6.5s6.5-2.91 6.5-6.5c0-1.985-.892-3.758-2.295-4.95-.447-.38-.705-.938-.705-1.525v-7.525c0-1.933-1.567-3.5-3.5-3.5zm2.107 14.718c-1.012-.89-1.607-1.734-1.607-3.22v-6.498h-1v6.498c0 1.484-.597 2.332-1.607 3.22-.794.698-1.393 1.642-1.393 2.782 0 1.933 1.567 3.5 3.5 3.5s3.5-1.567 3.5-3.5c0-1.14-.599-2.083-1.393-2.782zm6.393-3.718h2v-5h3l-4-4-4 4h3v5z"/></svg>`;
+            else
+            icon = `<svg xmlns="http://www.w3.org/2000/svg" fill="green" width="24" height="24" viewBox="0 0 24 24"><path d="M8.5 2c.827 0 1.5.673 1.5 1.5v7.525c0 1.569.514 2.287 1.411 3.05 1.01.858 1.589 2.106 1.589 3.425 0 2.481-2.019 4.5-4.5 4.5s-4.5-2.019-4.5-4.5c0-1.319.579-2.567 1.59-3.425.896-.761 1.41-1.48 1.41-3.05v-7.525c0-.827.673-1.5 1.5-1.5zm0-2c-1.933 0-3.5 1.567-3.5 3.5v7.525c0 .587-.258 1.145-.705 1.525-1.403 1.192-2.295 2.965-2.295 4.95 0 3.59 2.909 6.5 6.5 6.5s6.5-2.91 6.5-6.5c0-1.985-.892-3.758-2.295-4.95-.447-.38-.705-.938-.705-1.525v-7.525c0-1.933-1.567-3.5-3.5-3.5zm2.107 14.718c-1.012-.89-1.607-1.734-1.607-3.22v-6.498h-1v6.498c0 1.484-.597 2.332-1.607 3.22-.794.698-1.393 1.642-1.393 2.782 0 1.933 1.567 3.5 3.5 3.5s3.5-1.567 3.5-3.5c0-1.14-.599-2.083-1.393-2.782zm6.393-3.718h2v-5h3l-4-4-4 4h3v5z"/></svg>`;
+
+            modalContent.innerHTML = '<p>Temperature: ' + temperature + '°C</p>' +
+                                     '<p>Humidity: ' + humidity + '%</p>' +
+                                     '<p>Pressure: ' + pressure + 'hPa</p>' +
+                                     icon;
+
+            modal.style.display = "block";
+        }
+
+        // Function to close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <!-- You can add additional styling if needed -->
+    <style>
+        /* Add custom CSS styles here */
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            margin-top: 50px;
+        }
+        .form-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            <div class="form-container">
+                <h1 class="form-title">Register</h1>
+                <form action="/register" method="post">
+                    <div class="field">
+                        <label class="label">Username</label>
+                        <div class="control">
+                            <input class="input" type="text" name="username" placeholder="Enter your username" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Password</label>
+                        <div class="control">
+                            <input class="input" type="password" name="password" placeholder="Enter your password" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button class="button is-primary" type="submit">Register</button>
+                        </div>
+                    </div>
+                </form>
+                <p>Already have an account? <a href="/login">Login here</a></p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
